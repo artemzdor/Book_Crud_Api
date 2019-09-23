@@ -45,7 +45,7 @@ SET removed = $1::boolean, tm_removed = $2::timestamp with time zone
 WHERE id = $3
 """
 
-SELECT_BOOK: str = """
+SELECT_ALL_BOOK: str = """
 SELECT *
 FROM {table_name}
 WHERE removed != $1
@@ -126,7 +126,7 @@ async def read_book(pool: asyncpg.pool.Pool, logger: logging.Logger) -> List[Boo
             True,
         )
         logger.debug("READ_BOOK")
-        books = await connection.fetch(SELECT_BOOK.format(table_name=get_table_name()), *column)
+        books = await connection.fetch(SELECT_ALL_BOOK.format(table_name=get_table_name()), *column)
         if books:
             result: List[Book] = [Book(**i) for i in books]
         else:

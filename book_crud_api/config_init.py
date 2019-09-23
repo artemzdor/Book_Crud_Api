@@ -6,10 +6,6 @@ import json
 from pathlib import Path
 
 
-def get_config() -> dict:
-    pass
-
-
 def get_version() -> str:
     return "1.0.0"
 

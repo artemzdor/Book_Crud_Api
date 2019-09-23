@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
 import logging
 import asyncio
 import asyncpg
@@ -12,14 +11,13 @@ from asyncio import AbstractEventLoop
 from aiohttp.web_app import Application
 
 from book_crud_api.config_init import load_config
-from book_crud_api.models.Book import Book
 from book_crud_api.routes_src.READ import read_api
 from book_crud_api.log_config import dictLogConfig
 from book_crud_api.routes_src.CREATE import create_api
 from book_crud_api.routes_src.DELETE import delete_api
 from book_crud_api.routes_src.UPDATE import update_api
 from book_crud_api.routes_src.version import version_api
-from book_crud_api.adapter_sql import create_table_books, create_book, update_book, delete_book, read_book
+from book_crud_api.adapter_sql import create_table_books
 
 
 def get_logger() -> logging.Logger:
@@ -45,8 +43,6 @@ async def init_app(logger: logging.Logger, config_pg: dict) -> Application:
     """Initialize the application server."""
     app: Application = web.Application()
     pool: asyncpg.pool.Pool = await asyncpg.create_pool(**config_pg["pg_connect"])
-    # await create_table_books(pool, logger)
-    # await read_book(pool, logger)
     app['pool'] = pool
     del pool
     return app
