@@ -136,7 +136,7 @@ async def update_create_book(pool: asyncpg.pool.Pool, logger: logging.Logger, bo
         connection: asyncpg.connection.Connection
         column: Tuple[int, bool, int] = (book.get_assessment(), delete, book.get_id())
         await connection.execute(UPDATE_BOOK_REMOVED.format(table_name=get_table_name()), *column)
-        logger.info(f"DELETE book: (id: {book.get_id()}, name: {book.get_name()}, "
+        logger.info(f"UPDATE CREATE book: (id: {book.get_id()}, name: {book.get_name()}, "
                     f"author: {book.get_author()}), assessment: {book.get_assessment()})")
         del column
         return book
