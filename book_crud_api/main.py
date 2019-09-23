@@ -57,7 +57,7 @@ if __name__ == '__main__':
     loop: AbstractEventLoop = asyncio.get_event_loop()
     # ждем когда подымется postgres_db
     print("Sleep 10s")
-    time.sleep(10)
+    time.sleep(10000)
     print("Sleep end")
     app: Application = loop.run_until_complete(init_app(logger, config_pg=config_pg))
     app['logger'] = logger

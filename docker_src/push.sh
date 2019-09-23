@@ -9,3 +9,4 @@ echo "Docker Push"
 docker push $DOCKER_URL
 
 echo "End"
+
