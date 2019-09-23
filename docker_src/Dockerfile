@@ -10,4 +10,10 @@ EXPOSE 8080
 
 WORKDIR /usr/src/Book_Crud_Api/book_crud_api
 
-CMD ["/bin/sh", "-c", "python3", "main.py"]
+ENV PATH_CONFIG_JSON /usr/src/Book_Crud_Api/book_crud_api/config.json
+ENV PYTHONPATH /usr/src/Book_Crud_Api
+
+RUN pip3 install --no-cache-dir --upgrade pip && \
+    pip3 install --no-cache-dir -r requirements.txt
+
+CMD ["python3", "main.py"]

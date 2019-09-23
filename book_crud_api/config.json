@@ -1,0 +1,9 @@
+{
+  "pg_connect": {
+    "host": "postgres_db",
+    "port": 5432,
+    "user": "user_test",
+    "password": "example_test",
+    "database": "book_crud_api_test"
+  }
+}

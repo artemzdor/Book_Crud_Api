@@ -13,4 +13,9 @@ echo "Docker Build"
 
 docker build -t $DOCKER_URL .
 
+echo "Delete $GIT_CLONE"
+
+rm -rf ./Book_Crud_Api
+
 echo "End"
+

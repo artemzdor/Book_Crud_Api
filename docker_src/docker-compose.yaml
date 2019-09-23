@@ -2,16 +2,33 @@ version: '3'
 
 services:
 
-  test_erlang:
+  postgres_db:
+    image: postgres
+    restart: always
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: user_test
+      POSTGRES_PASSWORD: example_test
+      POSTGRES_DB: book_crud_api_test
+    ports:
+      - 5532:5432
+
+  pgadmin4:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - "PGADMIN_DEFAULT_EMAIL=user@domain.com"
+      - "PGADMIN_DEFAULT_PASSWORD=SuperSecret"
+    ports:
+      - 10010:80
+
+  book_crud_api:
     container_name: book_crud_api
     image: asfree/book_crud_api:latest
-
+    environment:
+      - "PATH_CONFIG_JSON=/usr/src/Book_Crud_Api/book_crud_api/config.json"
     ports:
       - 5555:8080
 
-    logging:
-      driver: json-file
-      options:
-        max-size: "500m"
-        max-file: "3"
 
