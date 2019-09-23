@@ -12,8 +12,8 @@ from book_crud_api.models.Book import Book
 from book_crud_api.adapter_sql import create_book, find_book
 
 
-async def load_book(request: Request, book: Book, id_book: int = None) -> Tuple[bool, List[Book]]:
-    book_find: Tuple[bool, List[Book]] = await find_book(request.app["pool"], request.app["logger"], book, id_book)
+async def load_book(request: Request, book: Book, id_book: int = None) -> List[Book]:
+    book_find: List[Book] = await find_book(request.app["pool"], request.app["logger"], book, id_book)
     return book_find
 
 

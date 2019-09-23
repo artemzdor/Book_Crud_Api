@@ -19,33 +19,20 @@ async def update_api(request: Request) -> Response:
     try:
         data = json.loads(text)
     except Exception as e:
-        return web.json_response({
-            "massage": "Error decode json",
-            "error": f"{e}",
-            "successful": False
-        }, status=415)
+        return web.json_response({"massage": "Error decode json", "error": f"{e}", "successful": False}, status=415)
 
     if not verify_json_post_create(data, ["id", "assessment"]):
-        return web.json_response({
-            "massage": "Error keys json",
-            "error": 'id, assessment',
-            "successful": False
-        }, status=452)
+        return web.json_response({"massage": "Error keys json", "error": 'id, assessment', "successful": False
+                                  }, status=452)
 
     book: Book = Book(**data)
 
-    book_find: Tuple[bool, List[Book]] = await load_book(request, book, id_book=book.get_id())
+    book_find: List[Book] = await load_book(request, book, id_book=book.get_id())
 
-    if book_find[1]:
+    if book_find:
         await update_book(request.app["pool"], request.app["logger"], book)
-        return web.json_response({
-            "id": f"{book.get_id()}",
-            "successful": True
-        }, status=200)
+        return web.json_response({"id": f"{book.get_id()}", "successful": True}, status=200)
     else:
-        return web.json_response({
-            "id": f"{book.get_id()}",
-            "error": f"Not found Book",
-            "successful": False
-        }, status=412)
+        return web.json_response({"id": f"{book.get_id()}", "error": f"Not found Book", "successful": False
+                                  }, status=412)
 

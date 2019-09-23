@@ -39,6 +39,12 @@ SET assessment = $1::integer
 WHERE id = $2;
 """
 
+UPDATE_BOOK_REMOVED: str = """
+UPDATE {table_name} 
+SET assessment = $1::integer, removed = $2::boolean
+WHERE id = $3;
+"""
+
 DELETE_BOOK: str = """
 UPDATE {table_name}
 SET removed = $1::boolean, tm_removed = $2::timestamp with time zone
@@ -106,10 +112,7 @@ async def create_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Boo
 async def update_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Book) -> Book:
     async with pool.acquire() as connection:
         connection: asyncpg.connection.Connection
-        column: Tuple[int, int] = (
-            book.get_assessment(),
-            book.get_id()
-        )
+        column: Tuple[int, int] = (book.get_assessment(), book.get_id())
         await connection.execute(UPDATE_BOOK.format(table_name=get_table_name()), *column)
         logger.info(f"UPDATE book: (id: {book.get_id()}, name: {book.get_name()}, "
                     f"author: {book.get_author()}), assessment: {book.get_assessment()})")
@@ -117,15 +120,22 @@ async def update_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Boo
         return book
 
 
-async def delete_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Book) -> Book:
+async def delete_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Book, delete: bool = True) -> Book:
     async with pool.acquire() as connection:
         connection: asyncpg.connection.Connection
-        column: Tuple[bool, datetime, int] = (
-            True,
-            datetime.now(),
-            book.get_id(),
-        )
+        column: Tuple[bool, datetime, int] = (delete, datetime.now(), book.get_id())
         await connection.execute(DELETE_BOOK.format(table_name=get_table_name()), *column)
+        logger.info(f"DELETE book: (id: {book.get_id()}, name: {book.get_name()}, "
+                    f"author: {book.get_author()}), assessment: {book.get_assessment()})")
+        del column
+        return book
+
+
+async def update_create_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Book, delete: bool = False) -> Book:
+    async with pool.acquire() as connection:
+        connection: asyncpg.connection.Connection
+        column: Tuple[int, bool, int] = (book.get_assessment(), delete, book.get_id())
+        await connection.execute(UPDATE_BOOK_REMOVED.format(table_name=get_table_name()), *column)
         logger.info(f"DELETE book: (id: {book.get_id()}, name: {book.get_name()}, "
                     f"author: {book.get_author()}), assessment: {book.get_assessment()})")
         del column
@@ -135,9 +145,7 @@ async def delete_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Boo
 async def read_book(pool: asyncpg.pool.Pool, logger: logging.Logger) -> List[Book]:
     async with pool.acquire() as connection:
         connection: asyncpg.connection.Connection
-        column: Tuple[bool] = (
-            True,
-        )
+        column: Tuple[bool] = (True,)
         logger.debug("READ_BOOK")
         books = await connection.fetch(SELECT_ALL_BOOK.format(table_name=get_table_name()), *column)
         if books:
@@ -148,14 +156,10 @@ async def read_book(pool: asyncpg.pool.Pool, logger: logging.Logger) -> List[Boo
         return result
 
 
-async def find_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Book,
-                    id_book: int = None) -> Tuple[bool, List[Book]]:
+async def find_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Book, id_book: int = None) -> List[Book]:
     async with pool.acquire() as connection:
         connection: asyncpg.connection.Connection
-        column: Tuple[str, str] = (
-            book.get_name(),
-            book.get_author(),
-        )
+        column: Tuple[str, str] = (book.get_name(), book.get_author())
         logger.debug("FIND_BOOK")
 
         if id_book:
@@ -167,7 +171,5 @@ async def find_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Book,
             result: List[Book] = [Book(**i) for i in books]
         else:
             result: List[Book] = list()
-        if books:
-            return False, result
-        else:
-            return True, []
+
+        return result

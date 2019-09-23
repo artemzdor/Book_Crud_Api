@@ -11,10 +11,7 @@ from book_crud_api.config_init import get_app_info
 
 
 async def version_api(request: Request) -> Response:
-    data: Dict[str, str] = {
-        "version": get_version(),
-        "app": get_app_info()
-    }
+    data: Dict[str, str] = {"version": get_version(), "app": get_app_info()}
     logger: Logger = request.app["logger"]
     logger.info("run version_json")
     return web.json_response(data)

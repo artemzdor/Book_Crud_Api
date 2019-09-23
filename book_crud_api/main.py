@@ -53,22 +53,16 @@ if __name__ == '__main__':
     logger.info(f"Start {td.now()}")
 
     config_pg: dict = load_config()
-
     loop: AbstractEventLoop = asyncio.get_event_loop()
 
     app: Application = loop.run_until_complete(init_app(logger, config_pg=config_pg))
-
     app['logger'] = logger
 
     loop.run_until_complete(create_table_books(app['pool'], logger=logger))
-
     init_routes(app=app)
 
     print(f"Start {td.now()}")
-
     web.run_app(app)
-
     print(f"Stop {td.now()}")
-
     logger.info(f"Stop {td.now()}")
 
