@@ -1,0 +1,4 @@
+asyncpg
+aiohttp
+cchardet
+aiodns

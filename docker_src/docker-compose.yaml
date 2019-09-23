@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+
+  test_erlang:
+    container_name: book_crud_api
+    image: asfree/book_crud_api:latest
+
+    ports:
+      - 5555:8080
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "500m"
+        max-file: "3"
+
