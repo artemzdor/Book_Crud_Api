@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import time
 import logging
 import asyncio
 import asyncpg
@@ -54,7 +55,10 @@ if __name__ == '__main__':
 
     config_pg: dict = load_config()
     loop: AbstractEventLoop = asyncio.get_event_loop()
-
+    # ждем когда подымется postgres_db
+    print("Sleep 10s")
+    time.sleep(10)
+    print("Sleep end")
     app: Application = loop.run_until_complete(init_app(logger, config_pg=config_pg))
     app['logger'] = logger
 
