@@ -25,7 +25,7 @@ async def create_api(request: Request) -> Response:
             "successful": False
         }, status=415)
 
-    if not verify_json_post_create(data, ["name", "author"]):
+    if not verify_json_post_create(data, ["name", "author", "assessment"]):
         return web.json_response({
             "massage": "Error keys json",
             "error": 'name, author',
@@ -38,15 +38,14 @@ async def create_api(request: Request) -> Response:
     if book_find[0]:
         book = await create_book(request.app["pool"], request.app["logger"], book)
         return web.json_response({
-            "massage": f"{book.get_id()}",
-            "error": "",
+            "id": f"{book.get_id()}",
             "successful": True
-        }, status=409)
+        }, status=200)
     else:
         return web.json_response({
             "massage": "Duplicate",
             "error": ", ".join([str(i.get_id()) for i in book_find[1]]),
             "successful": False
-        }, status=200)
+        }, status=409)
 
 
