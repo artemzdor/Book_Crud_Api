@@ -52,6 +52,13 @@ WHERE removed != $1
 """
 
 
+SELECT_FIND_BOOK: str = """
+SELECT *
+FROM {table_name}
+WHERE name = $1 and author = $2
+"""
+
+
 def get_table_name() -> str:
     return TABLE_NAME
 
@@ -134,3 +141,22 @@ async def read_book(pool: asyncpg.pool.Pool, logger: logging.Logger) -> List[Boo
         del column, books
         return result
 
+
+async def find_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Book) -> Tuple[bool, List[Book]]:
+    async with pool.acquire() as connection:
+        connection: asyncpg.connection.Connection
+        column: Tuple[str, str] = (
+            book.get_name(),
+            book.get_author(),
+        )
+        logger.debug("FIND_BOOK")
+        books = await connection.fetch(SELECT_FIND_BOOK.format(table_name=get_table_name()), *column)
+
+        if books:
+            result: List[Book] = [Book(**i) for i in books]
+        else:
+            result: List[Book] = list()
+        if books:
+            return False, result
+        else:
+            return True, []
