@@ -58,6 +58,12 @@ FROM {table_name}
 WHERE name = $1 and author = $2
 """
 
+SELECT_ID_BOOK: str = """
+SELECT *
+FROM {table_name}
+WHERE id = $1
+"""
+
 
 def get_table_name() -> str:
     return TABLE_NAME
@@ -142,7 +148,8 @@ async def read_book(pool: asyncpg.pool.Pool, logger: logging.Logger) -> List[Boo
         return result
 
 
-async def find_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Book) -> Tuple[bool, List[Book]]:
+async def find_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Book,
+                    id_book: int = None) -> Tuple[bool, List[Book]]:
     async with pool.acquire() as connection:
         connection: asyncpg.connection.Connection
         column: Tuple[str, str] = (
@@ -150,7 +157,11 @@ async def find_book(pool: asyncpg.pool.Pool, logger: logging.Logger, book: Book)
             book.get_author(),
         )
         logger.debug("FIND_BOOK")
-        books = await connection.fetch(SELECT_FIND_BOOK.format(table_name=get_table_name()), *column)
+
+        if id_book:
+            books = await connection.fetch(SELECT_ID_BOOK.format(table_name=get_table_name()), id_book)
+        else:
+            books = await connection.fetch(SELECT_FIND_BOOK.format(table_name=get_table_name()), *column)
 
         if books:
             result: List[Book] = [Book(**i) for i in books]
