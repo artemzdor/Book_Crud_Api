@@ -28,6 +28,7 @@ services:
     image: asfree/book_crud_api:latest
     environment:
       - "PATH_CONFIG_JSON=/usr/src/Book_Crud_Api/book_crud_api/config.json"
+      - "SLEEP_START=20"
     ports:
       - 5555:8080
 

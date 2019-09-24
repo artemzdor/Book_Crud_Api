@@ -59,7 +59,7 @@ if __name__ == '__main__':
     loop: AbstractEventLoop = asyncio.get_event_loop()
     # ждем когда подымется postgres_db
     print("Sleep 20s")
-    time.sleep(os.environ.get("SLEEP_START", 1))
+    time.sleep(int(os.environ.get("SLEEP_START", 1)))
     print("Sleep end")
     app: Application = loop.run_until_complete(init_app(logger, config_pg=config_pg))
     app['logger'] = logger
