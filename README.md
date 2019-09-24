@@ -77,6 +77,7 @@ API
 				460 json -> {"id":"1", "error":"Not found Book","successful":false} ошибка если книга с id 1 не найдена
 
 методы get:
+
 	/ 	
 		возвращает: 200 json -> {"version": "1.0.0", "app": "Book CRUD API"}
 	
