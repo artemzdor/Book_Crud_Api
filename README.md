@@ -43,6 +43,7 @@ docker-compose up
 API
 
 методы post:
+
 	/ 	
 		возвращает: 200 json -> {"version": "1.0.0", "app": "Book CRUD API"}
 		
@@ -85,6 +86,7 @@ API
 
 
 Настройки: 
+
 	environment:
 		PATH_CONFIG_JSON=/usr/src/Book_Crud_Api/book_crud_api/config.json
 		файл настройки для подключения к postgresql
