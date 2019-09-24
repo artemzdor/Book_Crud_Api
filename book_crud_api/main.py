@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 import time
 import logging
 import asyncio
@@ -35,6 +36,7 @@ def init_routes(app: Application) -> None:
 
         web.post("/create", create_api),
         web.post("/read", read_api),
+        web.get("/read", read_api),
         web.post("/update", update_api),
         web.post("/delete", delete_api),
     ])
@@ -57,7 +59,7 @@ if __name__ == '__main__':
     loop: AbstractEventLoop = asyncio.get_event_loop()
     # ждем когда подымется postgres_db
     print("Sleep 20s")
-    time.sleep(20)
+    time.sleep(os.environ.get("SLEEP_START", 1))
     print("Sleep end")
     app: Application = loop.run_until_complete(init_app(logger, config_pg=config_pg))
     app['logger'] = logger

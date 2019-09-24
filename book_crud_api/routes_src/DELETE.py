@@ -36,4 +36,4 @@ async def delete_api(request: Request) -> Response:
             return web.json_response({"id": f"{book.get_id()}", "successful": True}, status=200)
     else:
         return web.json_response({"id": f"{book.get_id()}", "error": f"Not found Book", "successful": False},
-                                 status=412)
+                                 status=460)
