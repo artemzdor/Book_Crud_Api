@@ -24,7 +24,7 @@ async def create_api(request: Request) -> Response:
 
     if not verify_json_post_create(data, ["name", "author", "assessment"]):
         return web.json_response({"massage": "Error keys json", "error": 'name, author', "successful": False},
-                                 status=452)
+                                 status=422)
 
     book: Book = Book(**data)
     book_find: List[Book] = await load_book(request, book)

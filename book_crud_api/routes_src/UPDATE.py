@@ -23,7 +23,7 @@ async def update_api(request: Request) -> Response:
 
     if not verify_json_post_create(data, ["id", "assessment"]):
         return web.json_response({"massage": "Error keys json", "error": 'id, assessment', "successful": False
-                                  }, status=452)
+                                  }, status=422)
 
     book: Book = Book(**data)
 

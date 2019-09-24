@@ -22,7 +22,7 @@ async def delete_api(request: Request) -> Response:
         return web.json_response({"massage": "Error decode json", "error": f"{e}", "successful": False}, status=415)
 
     if not verify_json_post_create(data, ["id"]):
-        return web.json_response({"massage": "Error keys json", "error": 'id', "successful": False}, status=452)
+        return web.json_response({"massage": "Error keys json", "error": 'id', "successful": False}, status=422)
 
     book: Book = Book(**data)
     book_find: List[Book] = await load_book(request, book, id_book=book.get_id())
